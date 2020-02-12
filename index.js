@@ -37,7 +37,18 @@ server.post("/api/users", (request, response) => {
 
 // GET
 // returns ARRAY of all users objects in database
-server.get("/api/users", (request, response) => {});
+server.get("/api/users", (request, response) => {
+    db.find() // returns a promise that resolves to an array of all the users contained in the database
+    .then(users => {
+        response.status(201).json(users)
+    })
+    .catch(error => {
+        response.status(500).json({
+            error: error,
+            message: "Sadly, the users information could not be retrieved."
+        })
+    })
+});
 
 // returns user OBJECT with specific id
 server.get("/api/users/:id", (request, response) => {});
