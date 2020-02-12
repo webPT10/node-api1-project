@@ -51,7 +51,20 @@ server.get("/api/users", (request, response) => {
 });
 
 // returns user OBJECT with specific id
-server.get("/api/users/:id", (request, response) => {});
+server.get("/api/users/:id", (request, response) => {
+    const { id } = request.params; // where is params coming from?? 
+
+    db.findById()
+    .then(user => {
+        user ? response.status(201).json(user) : response.status(404).json({message: "User with the specified ID does not exist. Good-bye."})
+    })
+    .catch(error => {
+        response.status(500).json({
+            error: error,
+            message: "User information could not be retrieved."
+        })
+    })
+});
 
 // PUT
 // updates user with specific ID from request body > returns modified, not original
