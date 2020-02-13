@@ -7,9 +7,9 @@ server.use(express.json());
 
 let newId = 0;
 
-server.get("/", (requested, response) => {
-  response.send("Nil Satis Nisi Optimum");
-});
+// server.get("/", (requested, response) => {
+//   response.send("Nil Satis Nisi Optimum");
+// });
 
 // POST
 server.post("/api/users", (request, response) => {
@@ -54,7 +54,7 @@ server.get("/api/users", (request, response) => {
 server.get("/api/users/:id", (request, response) => {
     const { id } = request.params; // where is params coming from?? 
 
-    db.findById()
+    db.findById(id)
     .then(user => {
         user ? response.status(201).json(user) : response.status(404).json({message: "User with the specified ID does not exist. Good-bye."})
     })
