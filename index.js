@@ -68,12 +68,37 @@ server.get("/api/users/:id", (request, response) => {
 
 // PUT
 // updates user with specific ID from request body > returns modified, not original
-server.put("/api/users/:id", (request, response) => {});
+server.put("/api/users/:id", (request, response) => {
+    const { id } = request.params;
+    const { name, bio } = request.body;
+    const newUser = { name, bio, id };
+
+    if (!name || !bio) {
+        response.status(400).json({errorMessage: `Please provide name and bio for the user.`})
+    }
+
+    db.update(id, newUser)
+    .then(user => {
+        user ? response.status(200).json({message: `User at id${id} was updated/created.`}) : response.status(404).json({message: "The user with the specified ID does not exist."})
+    })
+    .catch(error => {
+        response.status(500).json({
+            error: error,
+            message: `The user information could not be modified.`
+        })
+    })
+
+});
 
 // DELETE
 // removes user with specific id & returns deleted user
 server.delete("/api/users/:id", (request, response) => {
-  const user = users.find(u => u.id == request.params.id);
+    const { id } = request.params;
+
+    db.remove()
+    .then()
+    .catch(error => 
+        response.status(500).json({error: error, message:"The user "}))
 });
 
 const port = 4040;
