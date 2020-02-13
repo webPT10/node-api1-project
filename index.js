@@ -96,11 +96,14 @@ server.delete("/api/users/:id", (request, response) => {
     const { id } = request.params;
 
     db.remove()
-    .then()
+    .then(user => {
+        user ? response.status(200).json({message: `User at id ${id} was removed.`}) : response.status(404).json({error: error, message:"The user with the specified ID does not exist."})
+    })
     .catch(error => 
-        response.status(500).json({error: error, message:"The user "}))
+        response.status(500).json({error: error, message:"The user could not be removed."}))
 });
 
+// watch for connections on port 4040
 const port = 4040;
 server.listen(port, () => {
   console.log(`server started @ http://localhost:${port}`);
