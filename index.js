@@ -1,4 +1,4 @@
-let db = require("./data/db");
+let db = require("./data/db"); // importing db
 
 const express = require("express"); // import Express package
 
@@ -7,9 +7,9 @@ server.use(express.json());
 
 let newId = 0;
 
-// server.get("/", (requested, response) => {
-//   response.send("Nil Satis Nisi Optimum");
-// });
+server.get("/", (request, response) => {
+  response.send("Nil Satis Nisi Optimum");
+});
 
 // POST
 server.post("/api/users", (request, response) => {
@@ -38,69 +38,96 @@ server.post("/api/users", (request, response) => {
 // GET
 // returns ARRAY of all users objects in database
 server.get("/api/users", (request, response) => {
-    db.find() // returns a promise that resolves to an array of all the users contained in the database
+  db.find() // returns a promise that resolves to an array of all the users contained in the database
     .then(users => {
-        response.status(201).json(users)
+      response.status(201).json(users);
     })
     .catch(error => {
-        response.status(500).json({
-            error: error,
-            message: "Sadly, the users information could not be retrieved."
-        })
-    })
+      response.status(500).json({
+        error: error,
+        message: "Sadly, the users information could not be retrieved."
+      });
+    });
 });
 
 // returns user OBJECT with specific id
 server.get("/api/users/:id", (request, response) => {
-    const { id } = request.params; // where is params coming from?? 
+  const { id } = request.params; // where is params coming from??
 
-    db.findById(id)
+  db.findById(id)
     .then(user => {
-        user ? response.status(201).json(user) : response.status(404).json({message: "User with the specified ID does not exist. Good-bye."})
+      user
+        ? response.status(201).json(user)
+        : response
+            .status(404)
+            .json({
+              message: "User with the specified ID does not exist. Good-bye."
+            });
     })
     .catch(error => {
-        response.status(500).json({
-            error: error,
-            message: "User information could not be retrieved."
-        })
-    })
+      response.status(500).json({
+        error: error,
+        message: "User information could not be retrieved."
+      });
+    });
 });
 
 // PUT
 // updates user with specific ID from request body > returns modified, not original
 server.put("/api/users/:id", (request, response) => {
-    const { id } = request.params;
-    const { name, bio } = request.body;
-    const newUser = { name, bio, id };
+  const { id } = request.params;
+  const { name, bio } = request.body;
+  const newUser = { name, bio, id };
 
-    if (!name || !bio) {
-        response.status(400).json({errorMessage: `Please provide name and bio for the user.`})
-    }
+  if (!name || !bio) {
+    response
+      .status(400)
+      .json({ errorMessage: `Please provide name and bio for the user.` });
+  }
 
-    db.update(id, newUser)
+  db.update(id, newUser)
     .then(user => {
-        user ? response.status(200).json({message: `User at id${id} was updated/created.`}) : response.status(404).json({message: "The user with the specified ID does not exist."})
+      user
+        ? response
+            .status(200)
+            .json({ message: `User at id${id} was updated/created.` })
+        : response
+            .status(404)
+            .json({
+              message: "The user with the specified ID does not exist."
+            });
     })
     .catch(error => {
-        response.status(500).json({
-            error: error,
-            message: `The user information could not be modified.`
-        })
-    })
-
+      response.status(500).json({
+        error: error,
+        message: `The user information could not be modified.`
+      });
+    });
 });
 
 // DELETE
 // removes user with specific id & returns deleted user
 server.delete("/api/users/:id", (request, response) => {
-    const { id } = request.params;
+  const { id } = request.params;
 
-    db.remove()
+  db.remove(id)
     .then(user => {
-        user ? response.status(200).json({message: `User at id ${id} was removed.`}) : response.status(404).json({error: error, message:"The user with the specified ID does not exist."})
+      user
+        ? response
+            .status(200)
+            .json({ message: `User at id ${id} was removed.` })
+        : response
+            .status(404)
+            .json({
+              error: error,
+              message: "The user with the specified ID does not exist."
+            });
     })
-    .catch(error => 
-        response.status(500).json({error: error, message:"The user could not be removed."}))
+    .catch(error =>
+      response
+        .status(500)
+        .json({ error: error, message: "The user could not be removed." })
+    );
 });
 
 // watch for connections on port 4040
